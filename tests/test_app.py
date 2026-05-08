@@ -24,6 +24,19 @@ def test_health_status_uses_file_storage(tmp_path) -> None:
     assert (tmp_path / "signals.jsonl").exists()
 
 
+def test_robots_and_sitemap_are_served(tmp_path) -> None:
+    client = TestClient(create_app(data_dir=tmp_path))
+
+    robots = client.get("/robots.txt")
+    sitemap = client.get("/sitemap.xml")
+
+    assert robots.status_code == 200
+    assert "Sitemap: https://duecare-ai.com/sitemap.xml" in robots.text
+    assert sitemap.status_code == 200
+    assert "https://duecare-ai.com/" in sitemap.text
+    assert "https://duecare-ai.com/docs" in sitemap.text
+
+
 def test_accepts_anonymized_signal_and_persists(tmp_path) -> None:
     client = TestClient(create_app(data_dir=tmp_path))
 

@@ -20,7 +20,7 @@ from typing import Literal
 
 from fastapi import FastAPI, HTTPException, Request, status
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import HTMLResponse
+from fastapi.responses import HTMLResponse, Response
 from pydantic import BaseModel, ConfigDict, Field, HttpUrl, field_validator
 
 from . import __version__
@@ -478,7 +478,47 @@ def create_app(*, data_dir: Path | None = None) -> FastAPI:
     async def index() -> str:
         return _index_html()
 
+    @application.get("/robots.txt", response_class=Response, tags=["ui"])
+    async def robots_txt() -> Response:
+        return Response(content=_robots_txt(), media_type="text/plain; charset=utf-8")
+
+    @application.get("/sitemap.xml", response_class=Response, tags=["ui"])
+    async def sitemap_xml() -> Response:
+        return Response(content=_sitemap_xml(), media_type="application/xml; charset=utf-8")
+
     return application
+
+
+def _robots_txt() -> str:
+    return """User-agent: *
+Allow: /
+
+Sitemap: https://duecare-ai.com/sitemap.xml
+"""
+
+
+def _sitemap_xml() -> str:
+    today = datetime.now(UTC).date().isoformat()
+    urls = [
+        "https://duecare-ai.com/",
+        "https://duecare-ai.com/docs",
+        "https://duecare-ai.com/redoc",
+        "https://duecare-ai.com/api/hub/knowledge-packs",
+    ]
+    entries = "\n".join(
+        f"""  <url>
+    <loc>{url}</loc>
+    <lastmod>{today}</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>{'1.0' if url.endswith('/') else '0.7'}</priority>
+  </url>"""
+        for url in urls
+    )
+    return f"""<?xml version=\"1.0\" encoding=\"UTF-8\"?>
+<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">
+{entries}
+</urlset>
+"""
 
 
 def _index_html() -> str:

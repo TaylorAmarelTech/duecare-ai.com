@@ -68,6 +68,12 @@ Domain:        duecare-ai.com and www.duecare-ai.com
 
 The included [render.yaml](render.yaml) describes this shape.
 
+Detailed setup docs:
+
+- [Render deployment notes](docs/RENDER.md)
+- [Domain and Cloudflare setup](docs/DOMAIN_SETUP.md)
+- [Claude website setup prompt](docs/CLAUDE_WEBSITE_SETUP_PROMPT.md)
+
 ## Required environment variables
 
 ```text
