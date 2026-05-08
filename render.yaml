@@ -1,0 +1,22 @@
+services:
+  - type: web
+    name: duecare-ai-hub
+    runtime: docker
+    plan: starter
+    region: oregon
+    branch: production
+    healthCheckPath: /api/health
+    autoDeploy: true
+    envVars:
+      - key: DUECARE_ENV
+        value: production
+      - key: DUECARE_PRIVACY_MODE
+        value: anonymized_signals_only_no_raw_pii
+      - key: DUECARE_STORAGE
+        value: file
+      - key: DUECARE_DATA_DIR
+        value: /app/.duecare
+    disk:
+      name: duecare-ai-data
+      mountPath: /app/.duecare
+      sizeGB: 1
