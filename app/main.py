@@ -24,6 +24,7 @@ from fastapi.responses import HTMLResponse, Response
 from pydantic import BaseModel, ConfigDict, Field, HttpUrl, field_validator
 
 from . import __version__
+from .site_content import components_html, context_html, grep_rules_html, home_html, tools_html, use_cases_html
 
 SignalSource = Literal[
     "ngo_case_intake",
@@ -476,7 +477,31 @@ def create_app(*, data_dir: Path | None = None) -> FastAPI:
 
     @application.get("/", response_class=HTMLResponse, tags=["ui"])
     async def index() -> str:
+        return home_html()
+
+    @application.get("/dashboard", response_class=HTMLResponse, tags=["ui"])
+    async def dashboard() -> str:
         return _index_html()
+
+    @application.get("/components", response_class=HTMLResponse, tags=["ui"])
+    async def components_page() -> str:
+        return components_html()
+
+    @application.get("/grep-rules", response_class=HTMLResponse, tags=["ui"])
+    async def grep_rules_page() -> str:
+        return grep_rules_html()
+
+    @application.get("/tools", response_class=HTMLResponse, tags=["ui"])
+    async def tools_page() -> str:
+        return tools_html()
+
+    @application.get("/context", response_class=HTMLResponse, tags=["ui"])
+    async def context_page() -> str:
+        return context_html()
+
+    @application.get("/use-cases", response_class=HTMLResponse, tags=["ui"])
+    async def use_cases_page() -> str:
+        return use_cases_html()
 
     @application.get("/robots.txt", response_class=Response, tags=["ui"])
     async def robots_txt() -> Response:
@@ -501,6 +526,12 @@ def _sitemap_xml() -> str:
     today = datetime.now(UTC).date().isoformat()
     urls = [
         "https://duecare-ai.com/",
+        "https://duecare-ai.com/components",
+        "https://duecare-ai.com/use-cases",
+        "https://duecare-ai.com/grep-rules",
+        "https://duecare-ai.com/tools",
+        "https://duecare-ai.com/context",
+        "https://duecare-ai.com/dashboard",
         "https://duecare-ai.com/docs",
         "https://duecare-ai.com/redoc",
         "https://duecare-ai.com/api/hub/knowledge-packs",

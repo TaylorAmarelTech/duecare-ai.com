@@ -35,6 +35,27 @@ def test_robots_and_sitemap_are_served(tmp_path) -> None:
     assert sitemap.status_code == 200
     assert "https://duecare-ai.com/" in sitemap.text
     assert "https://duecare-ai.com/docs" in sitemap.text
+    assert "https://duecare-ai.com/grep-rules" in sitemap.text
+
+
+def test_public_website_pages_explain_project(tmp_path) -> None:
+    client = TestClient(create_app(data_dir=tmp_path))
+
+    expected = {
+        "/": "Centralized knowledge. Decentralized privacy.",
+        "/components": "Eight components",
+        "/grep-rules": "Deterministic rules before generation.",
+        "/tools": "Tools draft; humans decide.",
+        "/context": "Context organized by corridor and jurisdiction.",
+        "/use-cases": "Use cases that fit the privacy rule.",
+        "/dashboard": "Try the privacy-preserving flow",
+    }
+
+    for path, marker in expected.items():
+        response = client.get(path)
+
+        assert response.status_code == 200
+        assert marker in response.text
 
 
 def test_accepts_anonymized_signal_and_persists(tmp_path) -> None:

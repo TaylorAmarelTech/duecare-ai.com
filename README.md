@@ -24,7 +24,13 @@ Canonical rule:
 ## API surface
 
 ```text
-GET  /                         Public dashboard
+GET  /                         Public project homepage
+GET  /components                Architecture component map
+GET  /use-cases                 Deployment stories
+GET  /grep-rules                Rule-category explainer
+GET  /tools                     Draft-only tool catalog
+GET  /context                   Context by corridor/jurisdiction
+GET  /dashboard                 Operational live hub dashboard
 GET  /api/health               Render health check + file-store check
 GET  /healthz                  Health alias
 GET  /api/hub/status           Service status, privacy mode, counters
